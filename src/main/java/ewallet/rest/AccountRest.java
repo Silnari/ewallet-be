@@ -2,8 +2,8 @@ package ewallet.rest;
 
 import ewallet.dto.AccountDto;
 import ewallet.entity.Account;
-import ewallet.entity.User;
 import ewallet.repository.AccountRepository;
+import ewallet.repository.TransactionRepository;
 import ewallet.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,12 @@ public class AccountRest {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
-    public AccountRest(AccountRepository accountRepository, UserRepository userRepository) {
+    public AccountRest(AccountRepository accountRepository, UserRepository userRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @GetMapping
@@ -26,10 +28,9 @@ public class AccountRest {
         return accountRepository.findAll();
     }
 
-    @GetMapping("/{user_id}")
-    public List<Account> getForUser(@PathVariable Long user_id) {
-        User user = userRepository.findById(user_id).orElseThrow();
-        return accountRepository.findAllByUser(user);
+    @GetMapping("/{userId}")
+    public List<Account> getForUser(@PathVariable Long userId) {
+        return accountRepository.findAllByUser_Id(userId);
     }
 
     @PostMapping
@@ -48,6 +49,7 @@ public class AccountRest {
 
     @DeleteMapping("/{id}")
     public void deleteAccount(@PathVariable Long id) {
+        transactionRepository.deleteAll(transactionRepository.findAllByAccount_Id(id));
         accountRepository.deleteById(id);
     }
 }

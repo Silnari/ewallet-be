@@ -2,7 +2,11 @@ package ewallet.rest;
 
 import ewallet.dto.UserDto;
 import ewallet.entity.User;
+import ewallet.repository.AccountRepository;
 import ewallet.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,9 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserRest {
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserRest(UserRepository userRepository) {
+    public UserRest(UserRepository userRepository, AccountRepository accountRepository) {
         this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @GetMapping("/{id}")
@@ -20,9 +28,18 @@ public class UserRest {
         return userRepository.findById(id).orElse(null);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public User addUser(@RequestBody UserDto user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(new User(user));
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<Long> authenticateUser(@RequestBody UserDto userDto) {
+        User user = userRepository.findByLogin(userDto.getLogin());
+        if (user == null || !passwordEncoder.matches(userDto.getPassword(), user.getPassword()))
+            return new ResponseEntity<>(-1L, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(user.getId(), HttpStatus.OK);
     }
 
     @PutMapping
@@ -32,6 +49,7 @@ public class UserRest {
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
+        accountRepository.deleteAll(accountRepository.findAllByUser_Id(id));
         userRepository.deleteById(id);
     }
 }

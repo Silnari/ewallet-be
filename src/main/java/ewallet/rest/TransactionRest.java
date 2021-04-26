@@ -25,9 +25,9 @@ public class TransactionRest {
         return transactionRepository.findAll();
     }
 
-    @GetMapping("/{account_id}")
-    public List<Transaction> getByAccount(@PathVariable Long account_id) {
-        return transactionRepository.findAllByAccount(accountRepository.findById(account_id).orElseThrow());
+    @GetMapping("/{accountId}")
+    public List<Transaction> getByAccount(@PathVariable Long accountId) {
+        return transactionRepository.findAllByAccount_Id(accountId);
     }
 
     @PostMapping
