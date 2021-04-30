@@ -8,6 +8,7 @@ import ewallet.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/account")
@@ -24,19 +25,20 @@ public class AccountRest {
     }
 
     @GetMapping
-    public List<Account> getAll() {
-        return accountRepository.findAll();
+    public List<AccountDto> getAll() {
+        return accountRepository.findAll().stream().map(AccountDto::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{userId}")
-    public List<Account> getForUser(@PathVariable Long userId) {
-        return accountRepository.findAllByUser_Id(userId);
+    public List<AccountDto> getForUser(@PathVariable Long userId) {
+        return accountRepository.findAllByUser_Id(userId).stream().map(AccountDto::new).collect(Collectors.toList());
     }
 
     @PostMapping
-    public Account createAccount(@RequestBody AccountDto accountDto) {
-        return accountRepository.save(new Account(accountDto,
-                userRepository.findById(accountDto.getUserId()).orElseThrow()));
+    public AccountDto createAccount(@RequestBody AccountDto accountDto) {
+        System.out.println("Starting balance: " + accountDto.getStartBalance());
+        return new AccountDto(accountRepository.save(new Account(accountDto,
+                userRepository.findById(accountDto.getUserId()).orElseThrow())));
     }
 
     @PutMapping("/{id}")

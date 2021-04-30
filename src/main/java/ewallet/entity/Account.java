@@ -19,7 +19,7 @@ public class Account {
     private User user;
     private String name;
     @Column(name = "start_balance")
-    private Integer startBalance;
+    private Double startBalance;
 
     public Account(AccountDto accountDto, User user) {
         this.user = user;
