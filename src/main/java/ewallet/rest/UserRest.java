@@ -29,9 +29,11 @@ public class UserRest {
     }
 
     @PostMapping("/register")
-    public User addUser(@RequestBody UserDto user) {
+    public ResponseEntity<User> addUser(@RequestBody UserDto user) {
+        if (userRepository.existsByLogin(user.getLogin()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(new User(user));
+        return new ResponseEntity<>(userRepository.save(new User(user)), HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
