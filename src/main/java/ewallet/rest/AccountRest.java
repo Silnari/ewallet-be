@@ -36,7 +36,6 @@ public class AccountRest {
 
     @PostMapping
     public AccountDto createAccount(@RequestBody AccountDto accountDto) {
-        System.out.println("Starting balance: " + accountDto.getStartBalance());
         return new AccountDto(accountRepository.save(new Account(accountDto,
                 userRepository.findById(accountDto.getUserId()).orElseThrow())));
     }

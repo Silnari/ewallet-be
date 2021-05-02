@@ -6,7 +6,9 @@ import ewallet.repository.AccountRepository;
 import ewallet.repository.TransactionRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transaction")
@@ -28,6 +30,13 @@ public class TransactionRest {
     @GetMapping("/{accountId}")
     public List<Transaction> getByAccount(@PathVariable Long accountId) {
         return transactionRepository.findAllByAccount_Id(accountId);
+    }
+
+    @GetMapping("/date/{accountId}")
+    public List<TransactionDto> getByAccountAndDate(@PathVariable Long accountId,
+                                             @RequestBody Date startDate, @RequestBody Date endDate) {
+        return transactionRepository.findAllByAccount_IdAndDateBetween(accountId, startDate, endDate)
+                .stream().map(TransactionDto::new).collect(Collectors.toList());
     }
 
     @PostMapping
