@@ -41,11 +41,11 @@ public class AccountRest {
     }
 
     @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
+    public AccountDto updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
         Account account = accountRepository.findById(id).orElseThrow();
         account.setName(accountDto.getName());
         account.setStartBalance(accountDto.getStartBalance());
-        return accountRepository.save(account);
+        return new AccountDto(accountRepository.save(account));
     }
 
     @DeleteMapping("/{id}")

@@ -28,31 +28,25 @@ public class TransactionRest {
     }
 
     @GetMapping("/{accountId}")
-    public List<Transaction> getByAccount(@PathVariable Long accountId) {
-        return transactionRepository.findAllByAccount_Id(accountId);
-    }
-
-    @GetMapping("/date/{accountId}")
-    public List<TransactionDto> getByAccountAndDate(@PathVariable Long accountId,
-                                             @RequestBody Date startDate, @RequestBody Date endDate) {
-        return transactionRepository.findAllByAccount_IdAndDateBetween(accountId, startDate, endDate)
+    public List<TransactionDto> getByAccount(@PathVariable Long accountId) {
+        return transactionRepository.findAllByAccount_Id(accountId)
                 .stream().map(TransactionDto::new).collect(Collectors.toList());
     }
 
     @PostMapping
-    public Transaction addTransaction(@RequestBody TransactionDto transactionDto) {
-        return transactionRepository.save(new Transaction(transactionDto,
-                accountRepository.findById(transactionDto.getAccountId()).orElseThrow()));
+    public TransactionDto addTransaction(@RequestBody TransactionDto transactionDto) {
+        return new TransactionDto(transactionRepository.save(new Transaction(transactionDto,
+                accountRepository.findById(transactionDto.getAccountId()).orElseThrow())));
     }
 
     @PutMapping("/{id}")
-    public Transaction updateTransaction(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
+    public TransactionDto updateTransaction(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow();
         transaction.setCategory(transactionDto.getCategory());
         transaction.setDate(transactionDto.getDate());
         transaction.setNote(transactionDto.getNote());
         transaction.setValue(transactionDto.getValue());
-        return transactionRepository.save(transaction);
+        return new TransactionDto(transactionRepository.save(transaction));
     }
 
     @DeleteMapping("/{id}")
