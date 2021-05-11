@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class TransactionDto {
 
+    private Long id;
     private Long accountId;
-    private Long otherAccountId;
     private String category;
     private Date date;
     private Double value;
@@ -20,8 +20,8 @@ public class TransactionDto {
     private TransactionType transactionType;
 
     public TransactionDto(Transaction transaction) {
+        this.id = transaction.getId();
         this.accountId = transaction.getAccount().getId();
-        this.otherAccountId = transaction.getOtherAccount().getId();
         this.category = transaction.getCategory();
         this.date = transaction.getDate();
         this.value = transaction.getValue();

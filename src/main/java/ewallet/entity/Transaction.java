@@ -19,9 +19,6 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
-    @ManyToOne
-    @JoinColumn(name="other_account_id")
-    private Account otherAccount;
     private String category;
     private Date date;
     private Double value;
