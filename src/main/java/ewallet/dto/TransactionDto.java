@@ -12,6 +12,7 @@ import java.util.Date;
 public class TransactionDto {
 
     private Long accountId;
+    private Long otherAccountId;
     private String category;
     private Date date;
     private Double value;
@@ -20,6 +21,7 @@ public class TransactionDto {
 
     public TransactionDto(Transaction transaction) {
         this.accountId = transaction.getAccount().getId();
+        this.otherAccountId = transaction.getOtherAccount().getId();
         this.category = transaction.getCategory();
         this.date = transaction.getDate();
         this.value = transaction.getValue();
