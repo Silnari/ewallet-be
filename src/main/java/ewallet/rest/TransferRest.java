@@ -36,15 +36,15 @@ public class TransferRest {
     @PostMapping
     public TransferDto addTransfer(@RequestBody TransferDto transferDto) {
         return new TransferDto(transferRepository.save(new Transfer(transferDto,
-                accountRepository.findById(transferDto.getFromAccountId()).orElseThrow(),
-                accountRepository.findById(transferDto.getToAccountId()).orElseThrow())));
+                accountRepository.findById(transferDto.getFromAccountId()).get(),
+                accountRepository.findById(transferDto.getToAccountId()).get())));
     }
 
     @PutMapping("/{id}")
     public TransferDto updateTransfer(@PathVariable Long id, @RequestBody TransferDto transferDto) {
-        Transfer transfer = transferRepository.findById(id).orElseThrow();
-        transfer.setFrom(accountRepository.findById(transferDto.getFromAccountId()).orElseThrow());
-        transfer.setTo(accountRepository.findById(transferDto.getToAccountId()).orElseThrow());
+        Transfer transfer = transferRepository.findById(id).get();
+        transfer.setFrom(accountRepository.findById(transferDto.getFromAccountId()).get());
+        transfer.setTo(accountRepository.findById(transferDto.getToAccountId()).get());
         transfer.setDate(transferDto.getDate());
         transfer.setNote(transferDto.getNote());
         transfer.setValue(transferDto.getValue());

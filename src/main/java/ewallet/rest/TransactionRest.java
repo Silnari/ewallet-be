@@ -21,11 +21,6 @@ public class TransactionRest {
         this.accountRepository = accountRepository;
     }
 
-    @GetMapping
-    public List<Transaction> getAll() {
-        return transactionRepository.findAll();
-    }
-
     @GetMapping("/{accountId}")
     public List<TransactionDto> getByAccount(@PathVariable Long accountId) {
         return transactionRepository.findAllByAccount_Id(accountId)
@@ -35,12 +30,12 @@ public class TransactionRest {
     @PostMapping
     public TransactionDto addTransaction(@RequestBody TransactionDto transactionDto) {
         return new TransactionDto(transactionRepository.save(new Transaction(transactionDto,
-                accountRepository.findById(transactionDto.getAccountId()).orElseThrow())));
+                accountRepository.findById(transactionDto.getAccountId()).get())));
     }
 
     @PutMapping("/{id}")
     public TransactionDto updateTransaction(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow();
+        Transaction transaction = transactionRepository.findById(id).get();
         transaction.setCategory(transactionDto.getCategory());
         transaction.setDate(transactionDto.getDate());
         transaction.setNote(transactionDto.getNote());

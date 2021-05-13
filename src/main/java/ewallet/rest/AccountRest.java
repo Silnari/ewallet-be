@@ -24,11 +24,6 @@ public class AccountRest {
         this.transactionRepository = transactionRepository;
     }
 
-    @GetMapping
-    public List<AccountDto> getAll() {
-        return accountRepository.findAll().stream().map(AccountDto::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/{userId}")
     public List<AccountDto> getForUser(@PathVariable Long userId) {
         return accountRepository.findAllByUser_Id(userId).stream().map(AccountDto::new).collect(Collectors.toList());
@@ -37,12 +32,12 @@ public class AccountRest {
     @PostMapping
     public AccountDto createAccount(@RequestBody AccountDto accountDto) {
         return new AccountDto(accountRepository.save(new Account(accountDto,
-                userRepository.findById(accountDto.getUserId()).orElseThrow())));
+                userRepository.findById(accountDto.getUserId()).get())));
     }
 
     @PutMapping("/{id}")
     public AccountDto updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
-        Account account = accountRepository.findById(id).orElseThrow();
+        Account account = accountRepository.findById(id).get();
         account.setName(accountDto.getName());
         account.setStartBalance(accountDto.getStartBalance());
         return new AccountDto(accountRepository.save(account));
