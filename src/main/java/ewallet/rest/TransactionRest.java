@@ -21,10 +21,11 @@ public class TransactionRest {
         this.accountRepository = accountRepository;
     }
 
-    @GetMapping("/{accountId}")
-    public List<TransactionDto> getByAccount(@PathVariable Long accountId) {
-        return transactionRepository.findAllByAccount_Id(accountId)
-                .stream().map(TransactionDto::new).collect(Collectors.toList());
+    @GetMapping("/{userId}/{accountId}")
+    public List<TransactionDto> getByAccount(@PathVariable Long userId, @PathVariable Long accountId) {
+        List<Transaction> transactionList = accountId == 0 ? transactionRepository.findAllByAccount_User_Id(userId) :
+                transactionRepository.findAllByAccount_Id(accountId);
+        return transactionList.stream().map(TransactionDto::new).collect(Collectors.toList());
     }
 
     @PostMapping

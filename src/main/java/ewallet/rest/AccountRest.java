@@ -26,7 +26,18 @@ public class AccountRest {
 
     @GetMapping("/{userId}")
     public List<AccountDto> getForUser(@PathVariable Long userId) {
-        return accountRepository.findAllByUser_Id(userId).stream().map(AccountDto::new).collect(Collectors.toList());
+        List<Account> accountList = accountRepository.findAllByUser_Id(userId);
+        accountList.add(getAllAccount(userId, accountList));
+        return accountList.stream().map(AccountDto::new).collect(Collectors.toList());
+    }
+
+    private Account getAllAccount(Long userId, List<Account> accountList) {
+        Account allAccount = new Account();
+        allAccount.setId(0L);
+        allAccount.setName("All");
+        allAccount.setUser(userRepository.findById(userId).get());
+        allAccount.setStartBalance(accountList.stream().mapToDouble(Account::getStartBalance).sum());
+        return allAccount;
     }
 
     @PostMapping
