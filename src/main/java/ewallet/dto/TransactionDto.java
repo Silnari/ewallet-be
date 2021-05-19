@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Class representing transaction data transfer object used in rests
+ */
 @Data
 @NoArgsConstructor
 public class TransactionDto {

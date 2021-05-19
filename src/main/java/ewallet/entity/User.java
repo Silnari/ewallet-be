@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+/**
+ * Class representing user
+ */
 @Data
 @Entity
 @NoArgsConstructor

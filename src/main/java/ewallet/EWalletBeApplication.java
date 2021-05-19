@@ -13,6 +13,9 @@ public class EWalletBeApplication {
         SpringApplication.run(EWalletBeApplication.class, args);
     }
 
+    /**
+     * Method to enable CORS
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

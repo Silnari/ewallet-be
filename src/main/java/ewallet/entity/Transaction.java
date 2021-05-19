@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Class representing account's transaction
+ */
 @Data
 @Entity
 @NoArgsConstructor

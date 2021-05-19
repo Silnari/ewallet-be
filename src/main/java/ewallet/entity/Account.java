@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Class representing user's account
+ */
 @Data
 @Entity
 @NoArgsConstructor

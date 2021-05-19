@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Class representing transfer from one account to another
+ */
 @Data
 @Entity
 @NoArgsConstructor

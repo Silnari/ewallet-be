@@ -23,19 +23,34 @@ public class UserRest {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Rest to get user by id
+     * @param id user id
+     * @return founded user
+     */
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Rest to add new user
+     * @param userDto user data transfer object
+     * @return added user
+     */
     @PostMapping("/register")
-    public ResponseEntity<User> addUser(@RequestBody UserDto user) {
-        if (userRepository.existsByLogin(user.getLogin()))
+    public ResponseEntity<User> addUser(@RequestBody UserDto userDto) {
+        if (userRepository.existsByLogin(userDto.getLogin()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return new ResponseEntity<>(userRepository.save(new User(user)), HttpStatus.OK);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        return new ResponseEntity<>(userRepository.save(new User(userDto)), HttpStatus.OK);
     }
 
+    /**
+     * Rest to authenticate user
+     * @param userDto user data transfer object
+     * @return id of authenticated user or -1
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<Long> authenticateUser(@RequestBody UserDto userDto) {
         User user = userRepository.findByLogin(userDto.getLogin());
@@ -44,11 +59,20 @@ public class UserRest {
         return new ResponseEntity<>(user.getId(), HttpStatus.OK);
     }
 
+    /**
+     * Rest to update user
+     * @param user user to update
+     * @return updated user
+     */
     @PutMapping
     public User updateUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
+    /**
+     * Rest to delete user by id
+     * @param id user id
+     */
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         accountRepository.deleteAll(accountRepository.findAllByUser_Id(id));

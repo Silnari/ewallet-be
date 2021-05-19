@@ -13,6 +13,9 @@ import java.util.Arrays;
 @Component
 public class LoggerAspect {
 
+    /**
+     * Method to log used methods in rest and repository packages
+     */
     @Before("execution(* ewallet.rest..*.*(..)) || execution(* ewallet.repository..*.*(..))")
     public void logBefore(JoinPoint joinPoint) {
         log.info(joinPoint.getTarget().getClass().getSimpleName()

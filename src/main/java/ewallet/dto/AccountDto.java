@@ -4,6 +4,9 @@ import ewallet.entity.Account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Class representing account data transfer object used in rests
+ */
 @Data
 @NoArgsConstructor
 public class AccountDto {

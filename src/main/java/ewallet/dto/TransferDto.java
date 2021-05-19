@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Class representing transfer data transfer object used in rests
+ */
 @Data
 @NoArgsConstructor
 public class TransferDto {
