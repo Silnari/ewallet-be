@@ -4,6 +4,7 @@ import ewallet.dto.AccountDto;
 import ewallet.entity.Account;
 import ewallet.repository.AccountRepository;
 import ewallet.repository.TransactionRepository;
+import ewallet.repository.TransferRepository;
 import ewallet.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +18,21 @@ public class AccountRest {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+    private final TransferRepository transferRepository;
 
-    public AccountRest(AccountRepository accountRepository, UserRepository userRepository, TransactionRepository transactionRepository) {
+    public AccountRest(AccountRepository accountRepository,
+                       UserRepository userRepository,
+                       TransactionRepository transactionRepository,
+                       TransferRepository transferRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
+        this.transferRepository = transferRepository;
     }
 
     /**
      * Rest to return user account list
+     *
      * @param userId user id
      * @return user's account list (added 'All' account to represent all user's accounts)
      */
@@ -38,7 +45,8 @@ public class AccountRest {
 
     /**
      * Method to generate user 'All' account
-     * @param userId user id
+     *
+     * @param userId      user id
      * @param accountList user account list
      * @return generated 'All' account for given user
      */
@@ -53,6 +61,7 @@ public class AccountRest {
 
     /**
      * Rest to create account
+     *
      * @param accountDto account data transfer object
      * @return generated account
      */
@@ -64,7 +73,8 @@ public class AccountRest {
 
     /**
      * Rest to update account by id
-     * @param id account id
+     *
+     * @param id         account id
      * @param accountDto account data transfer object
      * @return updated account
      */
@@ -78,11 +88,14 @@ public class AccountRest {
 
     /**
      * Rest to delete account by id
+     *
      * @param id account id
      */
     @DeleteMapping("/{id}")
     public void deleteAccount(@PathVariable Long id) {
         transactionRepository.deleteAll(transactionRepository.findAllByAccount_Id(id));
+        transferRepository.deleteAll(transferRepository.findAllByFrom_Id(id));
+        transferRepository.deleteAll(transferRepository.findAllByTo_Id(id));
         accountRepository.deleteById(id);
     }
 }
