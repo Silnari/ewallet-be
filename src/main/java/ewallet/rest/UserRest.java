@@ -2,7 +2,6 @@ package ewallet.rest;
 
 import ewallet.dto.UserDto;
 import ewallet.entity.User;
-import ewallet.repository.AccountRepository;
 import ewallet.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserRest {
 
     private final UserRepository userRepository;
-    private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserRest(UserRepository userRepository, AccountRepository accountRepository) {
+    public UserRest(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.accountRepository = accountRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -57,25 +54,5 @@ public class UserRest {
         if (user == null || !passwordEncoder.matches(userDto.getPassword(), user.getPassword()))
             return new ResponseEntity<>(-1L, HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(user.getId(), HttpStatus.OK);
-    }
-
-    /**
-     * Rest to update user
-     * @param user user to update
-     * @return updated user
-     */
-    @PutMapping
-    public User updateUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-
-    /**
-     * Rest to delete user by id
-     * @param id user id
-     */
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        accountRepository.deleteAll(accountRepository.findAllByUser_Id(id));
-        userRepository.deleteById(id);
     }
 }

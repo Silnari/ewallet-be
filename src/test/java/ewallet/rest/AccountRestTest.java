@@ -3,14 +3,15 @@ package ewallet.rest;
 import ewallet.dto.AccountDto;
 import ewallet.entity.Account;
 import ewallet.entity.Transaction;
-import ewallet.entity.Transfer;
 import ewallet.entity.User;
 import ewallet.entity.enums.TransactionType;
 import ewallet.repository.AccountRepository;
 import ewallet.repository.TransactionRepository;
-import ewallet.repository.TransferRepository;
 import ewallet.repository.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -62,7 +63,7 @@ class AccountRestTest {
     }
 
     @Test
-    void getForUserResponseTest() {
+    void getForUserResponse() {
         List<AccountDto> accountList = accountRest.getForUser(getUserId());
 
         Assertions.assertEquals(4, accountList.size());
@@ -70,7 +71,7 @@ class AccountRestTest {
     }
 
     @Test
-    void createAccountTest() {
+    void createAccount() {
         long id = getUserId();
         AccountDto accountDto = new AccountDto();
         accountDto.setName("testAccount");
@@ -78,12 +79,11 @@ class AccountRestTest {
         accountDto.setUserId(id);
         accountRest.createAccount(accountDto);
 
-        Assertions.assertEquals(accountDto.getStartBalance(),
-                accountRepository.findByNameAndUser_Id(accountDto.getName(), id).getStartBalance());
+        Assertions.assertNotNull(accountRepository.findByNameAndUser_Id(accountDto.getName(), id));
     }
 
     @Test
-    void updateAccountTest() {
+    void updateAccount() {
         long id = getUserId();
         double balance = 222.;
         Account account = accountRepository.findByNameAndUser_Id("account1", id);
@@ -97,7 +97,7 @@ class AccountRestTest {
     }
 
     @Test
-    void deleteAccountTest() {
+    void deleteAccount() {
         long id = getUserId();
         Account account = accountRepository.findAllByUser_Id(id).get(0);
         Transaction transaction = new Transaction();
