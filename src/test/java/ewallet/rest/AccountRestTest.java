@@ -1,10 +1,9 @@
 package ewallet.rest;
 
+import ewallet.DataGenerator;
 import ewallet.dto.AccountDto;
 import ewallet.entity.Account;
-import ewallet.entity.Transaction;
 import ewallet.entity.User;
-import ewallet.entity.enums.TransactionType;
 import ewallet.repository.AccountRepository;
 import ewallet.repository.TransactionRepository;
 import ewallet.repository.UserRepository;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -34,28 +32,20 @@ class AccountRestTest {
     @Autowired
     private AccountRest accountRest;
 
+    @Autowired
+    private DataGenerator dataGenerator;
+
     @BeforeEach
     void generateData() {
-        User user = new User();
-        user.setLogin("testUser");
-        user.setEmail("test@user.com");
+        User user = dataGenerator.generateUser();
         userRepository.save(user);
-
-        for (int i = 1; i <= 3; i++) {
-            Account account = new Account();
-            account.setName("account" + i);
-            account.setStartBalance((double) i);
-            account.setUser(user);
-            accountRepository.save(account);
-        }
-
-        System.out.println(userRepository.findAll());
+        accountRepository.saveAll(dataGenerator.generateAccountList(user));
     }
 
     @AfterEach
     void deleteData() {
-        accountRepository.deleteAll(accountRepository.findAllByUser_Id(getUserId()));
-        userRepository.deleteById(getUserId());
+        accountRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     private long getUserId() {
@@ -72,44 +62,32 @@ class AccountRestTest {
 
     @Test
     void createAccount() {
-        long id = getUserId();
-        AccountDto accountDto = new AccountDto();
-        accountDto.setName("testAccount");
-        accountDto.setStartBalance(200.);
-        accountDto.setUserId(id);
-        accountRest.createAccount(accountDto);
+        long userId = getUserId();
+        AccountDto accountDto = dataGenerator.generateAccountDto(userId);
+        long id = accountRest.createAccount(accountDto).getId();
 
-        Assertions.assertNotNull(accountRepository.findByNameAndUser_Id(accountDto.getName(), id));
+        Assertions.assertTrue(accountRepository.existsById(id));
     }
 
     @Test
     void updateAccount() {
-        long id = getUserId();
+        long userId = getUserId();
         double balance = 222.;
-        Account account = accountRepository.findByNameAndUser_Id("account1", id);
-        AccountDto accountDto = new AccountDto();
-        accountDto.setName(account.getName());
-        accountDto.setUserId(id);
+        Account account = accountRepository.findAllByUser_Id(userId).get(0);
+        AccountDto accountDto = dataGenerator.generateAccountDto(account);
         accountDto.setStartBalance(balance);
         accountRest.updateAccount(account.getId(), accountDto);
 
-        Assertions.assertEquals(balance, accountRepository.findByNameAndUser_Id("account1", id).getStartBalance());
+        Assertions.assertEquals(balance, accountRepository.findById(account.getId()).get().getStartBalance());
     }
 
     @Test
     void deleteAccount() {
-        long id = getUserId();
-        Account account = accountRepository.findAllByUser_Id(id).get(0);
-        Transaction transaction = new Transaction();
-        transaction.setDate(new Date());
-        transaction.setCategory("test");
-        transaction.setTransactionType(TransactionType.INCOME);
-        transaction.setValue(20.);
-        transaction.setAccount(account);
-        String accountName = account.getName();
+        Account account = accountRepository.findAllByUser_Id(getUserId()).get(0);
+        transactionRepository.saveAll(dataGenerator.generateTransactionList(account));
         accountRest.deleteAccount(account.getId());
 
-        Assertions.assertNull(accountRepository.findByNameAndUser_Id(accountName, id));
+        Assertions.assertFalse(accountRepository.existsById(account.getId()));
         Assertions.assertEquals(Collections.emptyList(), transactionRepository.findAllByAccount_Id(account.getId()));
     }
 }

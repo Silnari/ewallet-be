@@ -1,5 +1,6 @@
 package ewallet.rest;
 
+import ewallet.DataGenerator;
 import ewallet.dto.UserDto;
 import ewallet.entity.User;
 import ewallet.repository.UserRepository;
@@ -9,9 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserRestTest {
@@ -22,20 +20,17 @@ class UserRestTest {
     @Autowired
     private UserRest userRest;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private DataGenerator dataGenerator;
 
     @BeforeEach
     void generateData() {
-        User user = new User();
-        user.setLogin("testUser");
-        user.setEmail("test@user.com");
-        user.setPassword(passwordEncoder.encode("password"));
-        userRepository.save(user);
+        userRepository.save(dataGenerator.generateUser());
     }
 
     @AfterEach
     void deleteData() {
-        userRepository.deleteById(getUserId());
+        userRepository.deleteAll();
     }
 
     private long getUserId() {
@@ -52,22 +47,16 @@ class UserRestTest {
 
     @Test
     void addUser() {
-        UserDto userDto = new UserDto();
-        userDto.setLogin("login");
-        userDto.setEmail("email@mail.com");
-        userDto.setPassword("password");
+        UserDto userDto = dataGenerator.generateUserDto();
         userRest.addUser(userDto);
 
-        Assertions.assertNotNull(userRepository.findByLogin("login"));
+        Assertions.assertNotNull(userRepository.findByLogin("testUser"));
         Assertions.assertEquals(400, userRest.addUser(userDto).getStatusCodeValue());
     }
 
     @Test
     void authenticateUser() {
-        UserDto userDto = new UserDto();
-        userDto.setLogin("testUser");
-        userDto.setEmail("test@user.com");
-        userDto.setPassword("password");
+        UserDto userDto = dataGenerator.generateUserDto();
 
         Assertions.assertEquals(200, userRest.authenticateUser(userDto).getStatusCodeValue());
         Assertions.assertEquals(getUserId(), userRest.authenticateUser(userDto).getBody());

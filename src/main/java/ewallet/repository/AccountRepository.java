@@ -18,12 +18,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
      * @return founded list of accounts
      */
     List<Account> findAllByUser_Id(Long userId);
-
-    /**
-     * Method to find account by its name and user id
-     * @param name account name
-     * @param userId user id
-     * @return founded account
-     */
-    Account findByNameAndUser_Id(String name, Long userId);
 }
