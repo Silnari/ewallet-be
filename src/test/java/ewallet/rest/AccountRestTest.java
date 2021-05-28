@@ -53,7 +53,7 @@ class AccountRestTest {
     }
 
     @Test
-    void getForUserResponse() {
+    void getForUser() {
         List<AccountDto> accountList = accountRest.getForUser(getUserId());
 
         Assertions.assertEquals(4, accountList.size());
