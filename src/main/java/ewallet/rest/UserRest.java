@@ -22,6 +22,7 @@ public class UserRest {
 
     /**
      * Rest to get user by id
+     *
      * @param id user id
      * @return founded user
      */
@@ -32,6 +33,7 @@ public class UserRest {
 
     /**
      * Rest to add new user
+     *
      * @param userDto user data transfer object
      * @return added user
      */
@@ -45,6 +47,7 @@ public class UserRest {
 
     /**
      * Rest to authenticate user
+     *
      * @param userDto user data transfer object
      * @return id of authenticated user or -1
      */

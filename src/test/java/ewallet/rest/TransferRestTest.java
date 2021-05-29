@@ -33,6 +33,9 @@ class TransferRestTest {
     @Autowired
     private DataGenerator dataGenerator;
 
+    /**
+     * Method to generate test data before each test
+     */
     @BeforeEach
     void generateData() {
         User user = dataGenerator.generateUser();
@@ -42,6 +45,9 @@ class TransferRestTest {
         transferRepository.saveAll(dataGenerator.generateTransferList(accountList.get(0), accountList.get(1)));
     }
 
+    /**
+     * Cleanup method
+     */
     @AfterEach
     void deleteData() {
         transferRepository.deleteAll();
@@ -49,14 +55,28 @@ class TransferRestTest {
         userRepository.deleteAll();
     }
 
+    /**
+     * Method to return test user id
+     *
+     * @return test user id
+     */
     private long getUserId() {
         return userRepository.findByLogin("testUser").getId();
     }
 
+    /**
+     * Method to return test user account id list
+     *
+     * @return test user account id list
+     */
     private List<Long> getAccountIdList() {
         return accountRepository.findAllByUser_Id(getUserId()).stream().map(Account::getId).collect(Collectors.toList());
     }
 
+    /**
+     * Test method to verify rest GET "/api/transfer/from/{fromId}" - get outgoing transfer list for given account
+     * Verifies length of returned transfer list for specified account
+     */
     @Test
     void getFrom() {
         getAccountIdList().forEach(accountId -> {
@@ -67,6 +87,10 @@ class TransferRestTest {
         });
     }
 
+    /**
+     * Test method to verify rest GET "/api/transfer/from/{fromId}" - get incoming transfer list for given account
+     * Verifies length of returned transfer list for specified account
+     */
     @Test
     void getTo() {
         getAccountIdList().forEach(accountId -> {
@@ -77,6 +101,10 @@ class TransferRestTest {
         });
     }
 
+    /**
+     * Test method to verify rest POST "/api/transfer" - add new transfer
+     * Verifies if added transfer is present in db
+     */
     @Test
     void addTransfer() {
         List<Long> accountIdList = getAccountIdList();
@@ -86,6 +114,10 @@ class TransferRestTest {
         Assertions.assertTrue(transferRepository.existsById(transferId));
     }
 
+    /**
+     * Test method to verify rest PUT "/api/transfer/{id}" - update transfer
+     * Verifies if updated transfer is present in db and its updated field is correct
+     */
     @Test
     void updateTransfer() {
         String note = "testNote";
@@ -98,6 +130,10 @@ class TransferRestTest {
         Assertions.assertEquals(note, transferRepository.findById(transfer.getId()).get().getNote());
     }
 
+    /**
+     * Test method to verify rest DELETE "/api/transfer/{id}" - delete transfer
+     * Verifies if deleted transfer is no longer present in db
+     */
     @Test
     void deleteTransfer() {
         long transferId = transferRepository.findAllByFrom_Id(getAccountIdList().get(0)).get(0).getId();

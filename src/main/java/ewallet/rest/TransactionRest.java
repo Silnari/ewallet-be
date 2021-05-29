@@ -23,7 +23,8 @@ public class TransactionRest {
 
     /**
      * Rest to return user transaction list for given account
-     * @param userId user id
+     *
+     * @param userId    user id
      * @param accountId account id
      * @return user's transaction list for given account
      */
@@ -36,6 +37,7 @@ public class TransactionRest {
 
     /**
      * Rest to add new transaction
+     *
      * @param transactionDto transaction data transfer object
      * @return added transaction
      */
@@ -47,7 +49,8 @@ public class TransactionRest {
 
     /**
      * Rest to update transaction by id
-     * @param id  transaction id
+     *
+     * @param id             transaction id
      * @param transactionDto transaction data transfer object
      * @return updated transaction
      */
@@ -63,6 +66,7 @@ public class TransactionRest {
 
     /**
      * Rest to delete transaction by id
+     *
      * @param id transaction id
      */
     @DeleteMapping("/{id}")

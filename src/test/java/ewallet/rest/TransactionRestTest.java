@@ -36,6 +36,9 @@ class TransactionRestTest {
     @Autowired
     private DataGenerator dataGenerator;
 
+    /**
+     * Method to generate test data before each test
+     */
     @BeforeEach
     void generateData() {
         User user = dataGenerator.generateUser();
@@ -45,6 +48,9 @@ class TransactionRestTest {
         accountList.forEach(account -> transactionRepository.saveAll(dataGenerator.generateTransactionList(account)));
     }
 
+    /**
+     * Cleanup method
+     */
     @AfterEach
     void deleteData() {
         transactionRepository.deleteAll();
@@ -52,14 +58,29 @@ class TransactionRestTest {
         userRepository.deleteAll();
     }
 
+    /**
+     * Method to return test user id
+     *
+     * @return test user id
+     */
     private long getUserId() {
         return userRepository.findByLogin("testUser").getId();
     }
 
+
+    /**
+     * Method to return test user account id list
+     *
+     * @return test user account id list
+     */
     private List<Long> getAccountIdList() {
         return accountRepository.findAllByUser_Id(getUserId()).stream().map(Account::getId).collect(Collectors.toList());
     }
 
+    /**
+     * Test method to verify rest GET "/api/transaction/{userId}/{accountId}" - get account list for user
+     * Verifies length of returned transaction list for specified account and if "All" account has all user transactions
+     */
     @Test
     void getByAccount() {
         long userId = getUserId();
@@ -74,6 +95,10 @@ class TransactionRestTest {
                 transactionRest.getByAccount(userId, 0L).size());
     }
 
+    /**
+     * Test method to verify rest POST "/api/transaction" - add new transaction
+     * Verifies if added transaction is present in db
+     */
     @Test
     void addTransaction() {
         long accountId = getAccountIdList().get(0);
@@ -83,6 +108,10 @@ class TransactionRestTest {
         Assertions.assertTrue(transactionRepository.existsById(transactionId));
     }
 
+    /**
+     * Test method to verify rest PUT "/api/transaction/{id}" - update transaction
+     * Verifies if updated transaction is present in db and its updated field is correct
+     */
     @Test
     void updateTransaction() {
         String category = "newTestCategory";
@@ -95,6 +124,10 @@ class TransactionRestTest {
         Assertions.assertEquals(category, transactionRepository.findById(transaction.getId()).get().getCategory());
     }
 
+    /**
+     * Test method to verify rest DELETE "/api/transaction/{id}" - delete transaction
+     * Verifies if deleted transaction is no longer present in db
+     */
     @Test
     void deleteTransaction() {
         long transactionId = transactionRepository.findAllByAccount_User_Id(getUserId()).get(0).getId();

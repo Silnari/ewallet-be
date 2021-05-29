@@ -35,6 +35,9 @@ class AccountRestTest {
     @Autowired
     private DataGenerator dataGenerator;
 
+    /**
+     * Method to generate test data before each test
+     */
     @BeforeEach
     void generateData() {
         User user = dataGenerator.generateUser();
@@ -42,16 +45,28 @@ class AccountRestTest {
         accountRepository.saveAll(dataGenerator.generateAccountList(user));
     }
 
+    /**
+     * Cleanup method
+     */
     @AfterEach
     void deleteData() {
         accountRepository.deleteAll();
         userRepository.deleteAll();
     }
 
+    /**
+     * Method to return test user id
+     *
+     * @return test user id
+     */
     private long getUserId() {
         return userRepository.findByLogin("testUser").getId();
     }
 
+    /**
+     * Test method to verify rest GET "/api/account/{userId}" - get accounts for user
+     * Verifies length of returned account list and if there is a account with id equals to 0 ("All" account)
+     */
     @Test
     void getForUser() {
         List<AccountDto> accountList = accountRest.getForUser(getUserId());
@@ -60,6 +75,10 @@ class AccountRestTest {
         Assertions.assertTrue(accountList.stream().anyMatch(a -> a.getId() == 0L));
     }
 
+    /**
+     * Test method to verify rest POST "/api/account" - add new account
+     * Verifies if added account is present in db
+     */
     @Test
     void createAccount() {
         long userId = getUserId();
@@ -69,6 +88,10 @@ class AccountRestTest {
         Assertions.assertTrue(accountRepository.existsById(id));
     }
 
+    /**
+     * Test method to verify rest PUT "/api/account/{id}" - update account
+     * Verifies if updated account is present in db and its updated field is correct
+     */
     @Test
     void updateAccount() {
         long userId = getUserId();
@@ -81,6 +104,10 @@ class AccountRestTest {
         Assertions.assertEquals(balance, accountRepository.findById(account.getId()).get().getStartBalance());
     }
 
+    /**
+     * Test method to verify rest DELETE "/api/account/{id}" - delete account
+     * Verifies if deleted account is no longer present in db and verifies if all its transactions are deleted as well
+     */
     @Test
     void deleteAccount() {
         Account account = accountRepository.findAllByUser_Id(getUserId()).get(0);

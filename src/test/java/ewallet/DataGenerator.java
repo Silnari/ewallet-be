@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class to generate example data
+ */
 @Component
 public class DataGenerator {
 
@@ -25,7 +28,11 @@ public class DataGenerator {
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
-
+    /**
+     * Method to generate example user
+     *
+     * @return generated user
+     */
     public User generateUser() {
         User user = new User();
         user.setLogin("testUser");
@@ -34,6 +41,11 @@ public class DataGenerator {
         return user;
     }
 
+    /**
+     * Method to generate example user data transfer object
+     *
+     * @return generated user data transfer object
+     */
     public UserDto generateUserDto() {
         UserDto userDto = new UserDto();
         userDto.setLogin("testUser");
@@ -42,6 +54,12 @@ public class DataGenerator {
         return userDto;
     }
 
+    /**
+     * Method to generate example account list for given user
+     *
+     * @param user user to be linked with generated accounts
+     * @return generated account list
+     */
     public List<Account> generateAccountList(User user) {
         List<Account> accountList = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
@@ -54,6 +72,12 @@ public class DataGenerator {
         return accountList;
     }
 
+    /**
+     * Method to generate example account data transfer object
+     *
+     * @param userId user id to be included in account data transfer object
+     * @return generated account data transfer object
+     */
     public AccountDto generateAccountDto(Long userId) {
         AccountDto accountDto = new AccountDto();
         accountDto.setName("account");
@@ -62,6 +86,12 @@ public class DataGenerator {
         return accountDto;
     }
 
+    /**
+     * Method to generate account data transfer object based on given account object
+     *
+     * @param account example account
+     * @return generated account data transfer object
+     */
     public AccountDto generateAccountDto(Account account) {
         AccountDto accountDto = new AccountDto();
         accountDto.setName(account.getName());
@@ -70,6 +100,12 @@ public class DataGenerator {
         return accountDto;
     }
 
+    /**
+     * Method to generate example transaction list for given account
+     *
+     * @param account account to be linked with generated transactions
+     * @return generated transaction list
+     */
     public List<Transaction> generateTransactionList(Account account) {
         List<Transaction> transactionList = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
@@ -84,6 +120,12 @@ public class DataGenerator {
         return transactionList;
     }
 
+    /**
+     * Method to generate example transaction data transfer object
+     *
+     * @param accountId account id to be included in transaction data transfer object
+     * @return generated transaction data transfer object
+     */
     public TransactionDto generateTransactionDto(Long accountId) {
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setTransactionType(TransactionType.INCOME);
@@ -94,6 +136,12 @@ public class DataGenerator {
         return transactionDto;
     }
 
+    /**
+     * Method to generate account transaction transfer object based on given transaction object
+     *
+     * @param transaction example transaction
+     * @return generated transaction data transfer object
+     */
     public TransactionDto generateTransactionDto(Transaction transaction) {
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setTransactionType(transaction.getTransactionType());
@@ -104,6 +152,13 @@ public class DataGenerator {
         return transactionDto;
     }
 
+    /**
+     * Method to generate example transfer list for given accounts
+     *
+     * @param account1 account to be linked with generated transfer
+     * @param account2 account to be linked with generated transfer
+     * @return generated transfer list
+     */
     public List<Transfer> generateTransferList(Account account1, Account account2) {
         List<Transfer> transferList = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
@@ -122,6 +177,13 @@ public class DataGenerator {
         return transferList;
     }
 
+    /**
+     * Method to generate example transfer data transfer object
+     *
+     * @param fromId from account id included in transfer data transfer object
+     * @param toId   to account id included in transfer data transfer object
+     * @return generated transfer data transfer object
+     */
     public TransferDto generateTransferDto(Long fromId, Long toId) {
         TransferDto transferDto = new TransferDto();
         transferDto.setFromAccountId(fromId);
@@ -131,6 +193,12 @@ public class DataGenerator {
         return transferDto;
     }
 
+    /**
+     * Method to generate account transfer transfer object based on given transfer object
+     *
+     * @param transfer example transfer
+     * @return generated transfer data transfer object
+     */
     public TransferDto generateTransferDto(Transfer transfer) {
         TransferDto transferDto = new TransferDto();
         transferDto.setFromAccountId(transfer.getFrom().getId());

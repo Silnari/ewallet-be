@@ -23,6 +23,7 @@ public class TransferRest {
 
     /**
      * Rest to return all outgoing transfers for given account
+     *
      * @param fromId account id
      * @return List of outgoing transfer for given account
      */
@@ -34,6 +35,7 @@ public class TransferRest {
 
     /**
      * Rest to return all ingoing transfers for given account
+     *
      * @param toId account id
      * @return List of ingoing transfer for given account
      */
@@ -45,6 +47,7 @@ public class TransferRest {
 
     /**
      * Rest to add new transfer
+     *
      * @param transferDto transfer data transfer object
      * @return added transfer
      */
@@ -57,7 +60,8 @@ public class TransferRest {
 
     /**
      * Rest to update transfer by id
-     * @param id transfer id
+     *
+     * @param id          transfer id
      * @param transferDto transfer data transfer object
      * @return updated transfer
      */
@@ -74,6 +78,7 @@ public class TransferRest {
 
     /**
      * Rest to delete transfer by id
+     *
      * @param id transfer id
      */
     @DeleteMapping("/{id}")
